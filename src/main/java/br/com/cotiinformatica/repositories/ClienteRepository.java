@@ -86,4 +86,30 @@ public class ClienteRepository {
 		connection.close();
 		return lista;
 	}
+
+	public Cliente findById(UUID id) throws Exception {
+
+		Connection connection = ConnectionFactory.getConnection();
+
+		PreparedStatement statement = connection.prepareStatement("select * from cliente where id=?");
+		statement.setObject(1, id);
+		ResultSet resultSet = statement.executeQuery();
+
+		Cliente cliente = null;
+
+		if (resultSet.next()) {
+			cliente = new Cliente();
+			cliente.setPlano(new Plano());
+
+			cliente.setId(UUID.fromString(resultSet.getString("id")));
+			cliente.setNome(resultSet.getString("nome"));
+			cliente.setEmail(resultSet.getString("email"));
+			cliente.setTelefone(resultSet.getString("telefone"));
+			cliente.getPlano().setId(UUID.fromString(resultSet.getString("plano_id")));
+
+		}
+		
+		connection.close();
+		return cliente;
+	}
 }
